@@ -12,10 +12,10 @@ const TransactionMiner = require('./app/transaction-miner');
 const { decrypt } = require('./util/encrypt_decrypt')
 
 const isDevelopment = process.env.ENV === 'development';
-const REDIS_URL = isDevelopment?
-	'redis://127.0.0.1:6379': 
-	'redis://:pcb08107675285379633dd82d3fa9aefbfdeebe7ddd16b646c8caed4d1dfd40ca@ec2-34-239-208-3.compute-1.amazonaws.com:32219'
 
+const REDIS_URL = isDevelopment ?
+	'redis://127.0.0.1:6379' : 
+	'redis://:pcb08107675285379633dd82d3fa9aefbfdeebe7ddd16b646c8caed4d1dfd40ca@ec2-34-239-208-3.compute-1.amazonaws.com:32219'
 const DEFAULT_PORT = 3000;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`
 
@@ -25,7 +25,7 @@ const wallet = new Wallet();
 const transactionPool = new TransactionPool();
 const note = new Note();
 const notePool = new NotePool();
-const pubsub = new PubSub({ blockchain, transactionPool, wallet, notePool, REDIS_URL });
+const pubsub = new PubSub({ blockchain, transactionPool, wallet, notePool, redisUrl: REDIS_URL });
 const transactionMiner = new TransactionMiner({ blockchain, transactionPool, wallet, pubsub, pubNotePool: notePool });
 let pubNotes = [];
 
@@ -251,10 +251,10 @@ if(isDevelopment) {
 let PEER_PORT;
 
 if(process.env.GENERATE_PEER_PORT == 'true') {
-    PEER_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 60000);
+    PEER_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 1000);
 }
 
-const PORT = process.env.PORT|| PEER_PORT || DEFAULT_PORT; 
+const PORT = process.env.PORT || PEER_PORT || DEFAULT_PORT; 
 app.listen(PORT, () => {
     console.log(`listening at localhost:${PORT}`);
 
