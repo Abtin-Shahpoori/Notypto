@@ -12,6 +12,7 @@ const TransactionMiner = require('./app/transaction-miner');
 const { decrypt } = require('./util/encrypt_decrypt')
 
 const isDevelopment = process.env.ENV === 'development';
+console.log(process.env.ENV);
 
 const REDIS_URL = isDevelopment ?
 	'redis://127.0.0.1:6379': 
