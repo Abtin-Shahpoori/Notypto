@@ -14,7 +14,7 @@ const { decrypt } = require('./util/encrypt_decrypt')
 const isDevelopment = process.env.ENV === 'development';
 
 const REDIS_URL = isDevelopment ?
-	'redis://127.0.0.1:6379' : 
+	'redis://127.0.0.1:6379': 
 	'redis://:pcb08107675285379633dd82d3fa9aefbfdeebe7ddd16b646c8caed4d1dfd40ca@ec2-34-239-208-3.compute-1.amazonaws.com:32219'
 
 const DEFAULT_PORT = 3000;
