@@ -1,0 +1,99 @@
+[
+    {
+        "hash": "d800cd74fe9fafbdf952443aab54eaa2613bedcb5ff6aadac39461ccb461cf98",
+        "lasthash": "ff7d5f51b1eb9b4abe78453bf6e6680121431af91e724aa3d8345308546e3e41",
+        "Data": {
+            "Transactions": {
+                "id": "there are no transactions for now"
+            },
+            "Notes": []
+        },
+        "timestamp": 1621949514244,
+        "nonce": 0,
+        "difficulty": 2
+    },
+    {
+        "hash": "6192a535309dcab627c5eed64d361bb6479c8eb0d3c893cdec3448f269b72c8a",
+        "lasthash": "d800cd74fe9fafbdf952443aab54eaa2613bedcb5ff6aadac39461ccb461cf98",
+        "Data": {
+            "Transactions": [
+                {
+                    "id": "7998daf0-1dcb-11ec-9c33-efc8bc9aa689",
+                    "outputMap": {
+                        "04448444969673113317b62b7768571b1af3426b362f9dac1b416a97128665884b8ef4f883d0aa668b9fdc8df8aa73e5ae5675fe25ba34c31b1fe062a17eb18c92": 50
+                    },
+                    "input": {
+                        "address": "*authorized-reward*"
+                    }
+                }
+            ],
+            "Notes": []
+        },
+        "timestamp": 1632552029728,
+        "nonce": 1,
+        "difficulty": 1
+    },
+    {
+        "hash": "5abd8e84a3a72a7f8a6132ba3a9eba344d709b6a7a94d5c09ede35d7a43e37a0",
+        "lasthash": "6192a535309dcab627c5eed64d361bb6479c8eb0d3c893cdec3448f269b72c8a",
+        "Data": {
+            "Transactions": [
+                {
+                    "id": "7c32bfb0-1dcb-11ec-9c33-efc8bc9aa689",
+                    "outputMap": {
+                        "04448444969673113317b62b7768571b1af3426b362f9dac1b416a97128665884b8ef4f883d0aa668b9fdc8df8aa73e5ae5675fe25ba34c31b1fe062a17eb18c92": 50
+                    },
+                    "input": {
+                        "address": "*authorized-reward*"
+                    }
+                }
+            ],
+            "Notes": []
+        },
+        "timestamp": 1632552034091,
+        "nonce": 1,
+        "difficulty": 0
+    },
+    {
+        "hash": "632115d57eb81047536706b841a5e48d438ef596281e4f999a5a14adcb1a2690",
+        "lasthash": "5abd8e84a3a72a7f8a6132ba3a9eba344d709b6a7a94d5c09ede35d7a43e37a0",
+        "Data": {
+            "Transactions": [
+                {
+                    "id": "b8a6d2b0-1dcb-11ec-9262-0b1c6e91fa61",
+                    "outputMap": {
+                        "04476a740a52079549af482c8848d19b53648837e32379c02b4fda3e0fbab2537582bd5231f3727e13d6d8613ded7b8a9b29acaac3fdd50fdf2718e982285de2cf": 50
+                    },
+                    "input": {
+                        "address": "*authorized-reward*"
+                    }
+                }
+            ],
+            "Notes": []
+        },
+        "timestamp": 1632552135516,
+        "nonce": 2,
+        "difficulty": 1
+    },
+    {
+        "hash": "d8e08e558170b1589d9d26a51d0ef66b947ac8558e40f8f6eaf676df343715e7",
+        "lasthash": "632115d57eb81047536706b841a5e48d438ef596281e4f999a5a14adcb1a2690",
+        "Data": {
+            "Transactions": [
+                {
+                    "id": "c0930570-1dcb-11ec-9262-0b1c6e91fa61",
+                    "outputMap": {
+                        "04476a740a52079549af482c8848d19b53648837e32379c02b4fda3e0fbab2537582bd5231f3727e13d6d8613ded7b8a9b29acaac3fdd50fdf2718e982285de2cf": 50
+                    },
+                    "input": {
+                        "address": "*authorized-reward*"
+                    }
+                }
+            ],
+            "Notes": []
+        },
+        "timestamp": 1632552148807,
+        "nonce": 1,
+        "difficulty": 0
+    }
+]

@@ -9,7 +9,8 @@ const Wallet = require('./wallet');
 const Note = require('./wallet/Note');
 const NotePool = require('./wallet/PubNote-pool');
 const TransactionMiner = require('./app/transaction-miner');
-const { decrypt } = require('./util/encrypt_decrypt')
+const { decrypt } = require('./util/encrypt_decrypt');
+const fs = require('fs');
 
 const isDevelopment = process.env.ENV === 'development';
 
@@ -44,7 +45,6 @@ app.post('/api/mine/', (req, res) => {
     const { Data } = req.body;
     blockchain.addBlock({ Data: Data });
     pubsub.broadcastChain();
-
     res.redirect('/api/blocks');
 }); 
 
@@ -174,6 +174,11 @@ app.get('/api/public-notes/:id', (req, res) => {
 }); 
 
 app.get('*', (req, res) => {
+	const blockchainfromFile = JSON.parse(fs.readFileSync('files/blockchain.json'));
+	if(blockchain.chain.length > blockchainfromFile.length) {
+		fs.writeFileSync('./files/blockchain.json', JSON.stringify(blockchain.chain, null, 4));
+	}
+	blockchain.replaceChain(blockchainfromFile);
 	res.sendFile(path.join(__dirname, './client/dist/index.html'));
 });
 
