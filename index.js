@@ -44,6 +44,11 @@ app.get('/api/blocks', (req, res) => {
 app.post('/api/mine/', (req, res) => {
     const { Data } = req.body;
     blockchain.addBlock({ Data: Data });
+	const blockchainfromFile = JSON.parse(fs.readFileSync('files/blockchain.json'));
+	if(blockchain.chain.length > blockchainfromFile.length) {
+		fs.writeFileSync('./files/blockchain.json', JSON.stringify(blockchain.chain, null, 4));
+	}
+	blockchain.replaceChain(blockchainfromFile);
     pubsub.broadcastChain();
     res.redirect('/api/blocks');
 }); 
@@ -105,7 +110,12 @@ app.get('/api/note-pool', (req, res) => {
 });
 
 app.get('/api/mine-transactions', (req, res) => {
-	transactionMiner.mineTransaction();
+	blockchain.replaceChain(blockchainfromFile);
+	const blockchainfromFile = JSON.parse(fs.readFileSync('files/blockchain.json'));
+	if(blockchain.chain.length > blockchainfromFile.length) {
+		fs.writeFileSync('./files/blockchain.json', JSON.stringify(blockchain.chain, null, 4));
+	}
+	blockchain.replaceChain(blockchainfromFile);
 	res.redirect('/api/blocks');
 });
 
