@@ -43,12 +43,6 @@ app.get('/api/blocks', (req, res) => {
 
 app.post('/api/mine/', (req, res) => {
     const { Data } = req.body;
-    blockchain.addBlock({ Data: Data });
-	const blockchainfromFile = JSON.parse(fs.readFileSync('files/blockchain.json'));
-	if(blockchain.chain.length > blockchainfromFile.length) {
-		fs.writeFileSync('./files/blockchain.json', JSON.stringify(blockchain.chain, null, 4));
-	}
-	blockchain.replaceChain(blockchainfromFile);
     pubsub.broadcastChain();
     res.redirect('/api/blocks');
 }); 
@@ -110,12 +104,7 @@ app.get('/api/note-pool', (req, res) => {
 });
 
 app.get('/api/mine-transactions', (req, res) => {
-	blockchain.replaceChain(blockchainfromFile);
-	const blockchainfromFile = JSON.parse(fs.readFileSync('files/blockchain.json'));
-	if(blockchain.chain.length > blockchainfromFile.length) {
-		fs.writeFileSync('./files/blockchain.json', JSON.stringify(blockchain.chain, null, 4));
-	}
-	blockchain.replaceChain(blockchainfromFile);
+	transactionMiner.mineTransaction();
 	res.redirect('/api/blocks');
 });
 
@@ -138,6 +127,7 @@ app.get('/api/wallet-personal-Notes', (req, res) => {
 });
 
 app.get('/api/public-notes', (req, res) => {
+	pubNotes = [];
 	for(let i = blockchain.chain.length - 1; i > 0; i --){
 		const block = blockchain.chain[i];
 		for(let note in block.Data.Notes) {
@@ -184,11 +174,6 @@ app.get('/api/public-notes/:id', (req, res) => {
 }); 
 
 app.get('*', (req, res) => {
-	const blockchainfromFile = JSON.parse(fs.readFileSync('files/blockchain.json'));
-	if(blockchain.chain.length > blockchainfromFile.length) {
-		fs.writeFileSync('./files/blockchain.json', JSON.stringify(blockchain.chain, null, 4));
-	}
-	blockchain.replaceChain(blockchainfromFile);
 	res.sendFile(path.join(__dirname, './client/dist/index.html'));
 });
 

@@ -4,22 +4,20 @@ import { Button } from "react-bootstrap";
 
 
 const PrivNoteCreate = () => {
-    const [message, setMessage] = React.useState({ message: "**Hello world!!!**" });
-    const [bmessage, bsetMessage] = React.useState("**Hello world!!!**");
+    const [message, setMessage] = React.useState({ message: "" });
+    const [bmessage, bsetMessage] = React.useState();
 
 
     const handleSubmit = e => {
       e.preventDefault();
-      setMessage({message: bmessage});
-      const data = { message };
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(message)
+        body: JSON.stringify({message: bmessage})
       };
-      fetch(`${document.location.origin}/api/priv-message`, requestOptions)
+      fetch(`${document.location.origin}/api/pub-message`, requestOptions)
         .then(res => res.json())
-        .then(json => alert(json.message || json.type));
+        .then(json => console.log(json));
     };
         
     return(
@@ -27,7 +25,6 @@ const PrivNoteCreate = () => {
             <div className="header"><a href="./notes"><button className="backButton">&#8249;</button></a></div>
             <h1 className="SeTitle">Create Private Note</h1>
             <hr color="orange" className="note-sep" />
-            {/* <input value={JSON.stringify(message)} onChange={e => setMessage(e.target.value)} /> */}
             <MDEditor value={bmessage}  onChange={bsetMessage}/>
             <Button onClick={handleSubmit}>Send</Button>
         </div>
