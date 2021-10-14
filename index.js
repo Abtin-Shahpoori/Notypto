@@ -126,6 +126,15 @@ app.get('/api/wallet-personal-Notes', (req, res) => {
 	res.json(privNotes);
 });
 
+app.post('/api/wallet-login', (req, res) => {
+	const { Address, seed } = req.body;
+	res.json(Address);
+});
+
+app.get('/api/get-seed', (req, res) => {
+	res.json(wallet.getSeed());
+});
+
 app.get('/api/public-notes', (req, res) => {
 	pubNotes = [];
 	for(let i = blockchain.chain.length - 1; i > 0; i --){
@@ -209,43 +218,43 @@ const syncWithRootState = () => {
 };
 
 if(isDevelopment) {
-	const walletFoo = new Wallet();
-	const walletBar = new Wallet();
+	// const walletFoo = new Wallet();
+	// const walletBar = new Wallet();
 
-	const generateWalletTransaction = ({ wallet, recipient, amount }) => {
-	const transaction = wallet.createTransaction({
-		recipient, amount, chain: blockchain.chain
-	});
+	// const generateWalletTransaction = ({ wallet, recipient, amount }) => {
+	// const transaction = wallet.createTransaction({
+	// 	recipient, amount, chain: blockchain.chain
+	// });
 
-	transactionPool.setTransaction(transaction);
-	};
+	// transactionPool.setTransaction(transaction);
+	// };
 
-	const walletAction = () => generateWalletTransaction({
-	wallet, recipient: walletFoo.publicKey, amount: 5
-	});
+	// const walletAction = () => generateWalletTransaction({
+	// wallet, recipient: walletFoo.publicKey, amount: 5
+	// });
 
-	const walletFooAction = () => generateWalletTransaction ({
-	wallet: walletFoo, recipient: walletBar.publicKey, amount: 10
-	});
+	// const walletFooAction = () => generateWalletTransaction ({
+	// wallet: walletFoo, recipient: walletBar.publicKey, amount: 10
+	// });
 
-	const walletBarAction = () => generateWalletTransaction({
-	wallet: walletFoo, recipient: wallet.publivKey, amount: 15
-	});
+	// const walletBarAction = () => generateWalletTransaction({
+	// wallet: walletFoo, recipient: wallet.publivKey, amount: 15
+	// });
 
-	for (let i=0; i<10; i++) {
-	if(i % 3 === 0) {
-		walletAction();
-		walletFooAction();
-	} else if (i%3===1) {
-		walletAction();
-		walletBarAction();
-	} else {
-		walletFooAction();
-		walletBarAction();
-	}
+	// for (let i=0; i<10; i++) {
+	// if(i % 3 === 0) {
+	// 	walletAction();
+	// 	walletFooAction();
+	// } else if (i%3===1) {
+	// 	walletAction();
+	// 	walletBarAction();
+	// } else {
+	// 	walletFooAction();
+	// 	walletBarAction();
+	// }
 
-	transactionMiner.mineTransaction();
-	}
+	// transactionMiner.mineTransaction();
+	// }
 }
 
 let PEER_PORT;
@@ -254,7 +263,7 @@ if(process.env.GENERATE_PEER_PORT == 'true') {
     PEER_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 1000);
 }
 
-const PORT = process.env.PORT || PEER_PORT || DEFAULT_PORT; 
+const PORT = PEER_PORT || DEFAULT_PORT || process.env.PORT; 
 app.listen(PORT, () => {
     console.log(`listening at localhost:${PORT}`);
 

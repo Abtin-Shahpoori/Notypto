@@ -192,4 +192,18 @@ describe('Wallet', () => {
 			});
 		});
 	})
+
+	describe('login works', () => {
+		beforeEach(() => {
+			FpublicKey = wallet.getSeed().Address;
+			Fseed = wallet.getSeed().Seed;
+			SpublicKey = wallet.getSeed().Address;
+			Sseed = wallet.getSeed().Seed;
+			blockchain = new Blockchain();
+		});
+
+		it('can login', () => {
+			console.log(wallet.login({ userPublicKey: FpublicKey, seed: Fseed}) !== SpublicKey);
+		});
+	});
 });
