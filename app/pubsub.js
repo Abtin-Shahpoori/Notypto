@@ -12,7 +12,7 @@ class PubSub {
         this.blockchain = blockchain;
         this.transactionPool = transactionPool;
         this.wallet = wallet;
-				this.notePool = notePool;
+		this.notePool = notePool;
 
         this.pusblisher = redis.createClient(redisUrl);
         this.subscriber = redis.createClient(redisUrl);

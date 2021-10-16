@@ -11,6 +11,7 @@ const NotePool = require('./wallet/PubNote-pool');
 const TransactionMiner = require('./app/transaction-miner');
 const { decrypt } = require('./util/encrypt_decrypt');
 const fs = require('fs');
+const { ec } = require('./util');
 
 const isDevelopment = process.env.ENV === 'development';
 
@@ -18,15 +19,15 @@ const REDIS_URL = isDevelopment ?
 	'redis://127.0.0.1:6379' : 
 	'redis://:pcb08107675285379633dd82d3fa9aefbfdeebe7ddd16b646c8caed4d1dfd40ca@ec2-34-239-208-3.compute-1.amazonaws.com:32219'
 const DEFAULT_PORT = 3000;
-const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`
+const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
+let wallet;
 
 let app = express();
 const blockchain = new Blockchain();
-const wallet = new Wallet();
 const transactionPool = new TransactionPool();
 const note = new Note();
 const notePool = new NotePool();
-const pubsub = new PubSub({ blockchain, transactionPool, wallet, notePool, redisUrl: REDIS_URL });
+var pubsub = new PubSub({ blockchain, transactionPool, wallet, notePool, redisUrl: REDIS_URL });
 const transactionMiner = new TransactionMiner({ blockchain, transactionPool, wallet, pubsub, pubNotePool: notePool });
 let pubNotes = [];
 
@@ -39,6 +40,19 @@ app.use(express.static(path.join(__dirname, 'client/dist')));
 
 app.get('/api/blocks', (req, res) => {
     res.json(blockchain.chain);
+});
+
+app.post('/api/create-wallet', (req, res) => {
+	if(Object.keys(req.body).length === 0) {
+		keys = ec.genKeyPair().getPrivate('hex');
+		wallet = new Wallet({ privateKey: keys });
+	} else {
+		const privateKey = req.body.privateKey;
+		Fwallet = wallet;
+		wallet = new Wallet({ privateKey });
+	}
+
+	res.json({ "public Key": wallet.publicKey,  "private Key": wallet.keyPair.getPrivate('hex') });
 });
 
 app.post('/api/mine/', (req, res) => {
@@ -126,10 +140,7 @@ app.get('/api/wallet-personal-Notes', (req, res) => {
 	res.json(privNotes);
 });
 
-app.post('/api/wallet-login', (req, res) => {
-	const { Address, seed } = req.body;
-	res.json(Address);
-});
+
 
 app.get('/api/get-seed', (req, res) => {
 	res.json(wallet.getSeed());

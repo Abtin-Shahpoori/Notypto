@@ -1,15 +1,12 @@
 const Transaction = require('./transaction')
 const { STARTING_BALANCE } = require('../config');
 const { ec, cryptoHash } = require('../util');
-const { decrypt, encrypt } = require('../util/encrypt_decrypt');
 
 class Wallet {
-    constructor() {
+    constructor({ privateKey }) {
         this.balance = STARTING_BALANCE;
-		this.keyPair = ec.genKeyPair();
-		this.publicKey = this.keyPair.getPublic().encode('hex');
-		this.seed = this.keyPair.getPrivate().toString('hex').substr(0, 32);
-		this.privateKey = encrypt(this.publicKey, this.seed);
+		this.keyPair = ec.keyFromPrivate(privateKey, 'hex');
+		this.publicKey = this.keyPair.getPublic('hex');
     }
 
     sign(data) {
@@ -20,7 +17,7 @@ class Wallet {
 		if(chain) {
 			this.balance = Wallet.calculateBalance({
 				chain,
-					address: this.publicKey
+				address: this.publicKey
 			})
 		}
 
@@ -32,20 +29,7 @@ class Wallet {
     }
 
 	getSeed() {
-		return {"Address": this.publicKey, "Seed": this.seed};
-	}
-
-	login({ userPublicKey, seed }) {
-		if(seed.length < 32) {
-			throw new Error('Seed not correct');
-		}
-
-		if(decrypt(this.privateKey, seed) === userPublicKey) {
-			this.publicKey = ec.keyFromPublic(userPublicKey, 'hex');
-		} else {
-			throw new Error('Seed not correct');
-		}
-		return this.publicKey = userPublicKey;
+		return {"Address": this.publicKey, "Seed": this.keyPair.getPrivate('hex')};
 	}
 
 	static calculateBalance({ chain, address }) {
