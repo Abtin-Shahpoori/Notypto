@@ -7,7 +7,7 @@ describe('Transaction', () => {
     let transaction, senderWallet, recipient, amount;
 
     beforeEach(() => {
-        senderWallet = new Wallet();
+        senderWallet = new Wallet({ privateKey: 'e99b2615b87da28752022963f7f225f5f0114244da765b06b941ba7ba28ba121' });
         recipient = 'recipient-public-key';
         amount = 1;
         transaction = new Transaction({ senderWallet, recipient, amount });
@@ -156,7 +156,7 @@ describe('Transaction', () => {
 	describe('rewardTransaction()', () => {
 		let rewardTransaction, minerWallet;
 		beforeEach(() => {
-			minerWallet = new Wallet();
+			minerWallet = new Wallet({ privateKey: 'e99b2615b87da28752022963f7f225f5f0114244da765b06b941ba7ba28ba121' });
 			rewardTransaction = Transaction.rewardTransaction({ minerWallet });
 		});
 

@@ -2,7 +2,7 @@ const Wallet = require('./index')
 const Transaction = require('./transaction');
 const { verifySignature } = require('../util')
 const Blockchain = require('../blockchain')
-const { STARTING_BALANCE } = require('../config')
+const { STARTING_BALANCE } = require('../config');
 
 describe('Wallet', () => {
     let wallet;
@@ -205,5 +205,8 @@ describe('Wallet', () => {
 		it('can login', () => {
 			console.log(wallet.login({ userPublicKey: FpublicKey, seed: Fseed}) !== SpublicKey);
 		});
+	});
+
+	describe('adds the new token to the blockchain', () => {		
 	});
 });

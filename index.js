@@ -12,6 +12,7 @@ const TransactionMiner = require('./app/transaction-miner');
 const { decrypt } = require('./util/encrypt_decrypt');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { ec } = require('./util');
+const Assetspool = require('./wallet/asset-pool');
 
 const isDevelopment = process.env.ENV === 'development';
 
@@ -25,6 +26,7 @@ let wallet;
 let app = express();
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
+const assetPool = new Assetspool();
 const note = new Note();
 const notePool = new NotePool();
 let pubNotes = [];
@@ -33,13 +35,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'client/dist')));
 
-fetch('https://api.jsonbin.io/v3/b/616bf3f54a82881d6c615574', {
-	method: 'GET',
-	headers: {
-		'X-MASTER-KEY': '$2b$10$TiCBFGH2liKX6VWoBLbmY.krQo/5LX9juOuUUMTNiAc70RmsIbmmy',
-		'Content-Type': 'application/json'
-	}
-}).then(response => response.json()).then(json => blockchain.replaceChain(json.record.chain));
+if(!isDevelopment) {
+	fetch('https://api.jsonbin.io/v3/b/616bf3f54a82881d6c615574', {
+		method: 'GET',
+		headers: {
+			'X-MASTER-KEY': '$2b$10$TiCBFGH2liKX6VWoBLbmY.krQo/5LX9juOuUUMTNiAc70RmsIbmmy',
+			'Content-Type': 'application/json'
+		}
+	}).then(response => response.json()).then(json => blockchain.replaceChain(json.record.chain));
+}
 
 app.get('/api/blocks', (req, res) => {
     res.json(blockchain.chain);
@@ -58,7 +62,7 @@ app.post('/api/create-wallet', (req, res) => {
 });
 
 const pubsub = new PubSub({ blockchain, transactionPool, wallet, notePool, redisUrl: REDIS_URL });
-const transactionMiner = new TransactionMiner({ blockchain, transactionPool, wallet, pubsub, pubNotePool: notePool });
+const transactionMiner = new TransactionMiner({ blockchain, transactionPool, wallet, pubsub, pubNotePool: notePool, AssetsPool: assetPool });
 
 app.post('/api/mine/', (req, res) => {
     const { Data } = req.body;
@@ -124,14 +128,16 @@ app.get('/api/note-pool', (req, res) => {
 
 app.get('/api/mine-transactions', (req, res) => {
 	transactionMiner.mineTransaction({ wallet });
-	fetch('https://api.jsonbin.io/v3/b/616bf3f54a82881d6c615574', {
-		method: 'PUT', 
-		headers: {
-			'X-MASTER-KEY': '$2b$10$TiCBFGH2liKX6VWoBLbmY.krQo/5LX9juOuUUMTNiAc70RmsIbmmy',
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(blockchain)
-	}).then(response => response.json()).then(json => console.log(json));
+	if(!isDevelopment) {
+		fetch('https://api.jsonbin.io/v3/b/616bf3f54a82881d6c615574', {
+			method: 'PUT', 
+			headers: {
+				'X-MASTER-KEY': '$2b$10$TiCBFGH2liKX6VWoBLbmY.krQo/5LX9juOuUUMTNiAc70RmsIbmmy',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(blockchain)
+		}).then(response => response.json()).then(json => console.log(json));
+	}
 	res.redirect('/api/blocks');
 });
 
@@ -205,6 +211,12 @@ app.get('/api/public-notes/:id', (req, res) => {
 	endIndex = endIndex < length ? endIndex: length;
 	res.json(RevPubNotes.slice(startIndex, endIndex));
 }); 
+
+app.post('/api/create-token', (req, res) => {
+	const { tokenName, tokenAbbr, amount } = req.body;
+	Wallet.mintNewToken({ minterWallet: wallet, tokenname: tokenName, tokenAbbr: tokenAbbr, amount: amount, chain: blockchain.chain, Assestspool: assetPool });
+	res.json('success')
+});
 
 app.get('*', (req, res) => {
 	res.sendFile(path.join(__dirname, './client/dist/index.html'));

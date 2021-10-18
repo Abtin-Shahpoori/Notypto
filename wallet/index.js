@@ -1,6 +1,7 @@
 const Transaction = require('./transaction')
 const { STARTING_BALANCE } = require('../config');
-const { ec, cryptoHash } = require('../util');
+const { ec, cryptoHash, checkExistingToken } = require('../util');
+const Assestspool = require('./asset-pool');
 
 class Wallet {
     constructor({ privateKey }) {
@@ -55,6 +56,16 @@ class Wallet {
 		}
 
 		return hasConductedTransaction ? outputsTotal : STARTING_BALANCE + outputsTotal;
+	}
+
+	static mintNewToken({ minterWallet, tokenName, tokenAbbr, amount, chain, Assestspool }) {
+		const tokenHash = cryptoHash(tokenName);
+		minterWallet.createTransaction({ recipient: '0x00', amount: 0.5, chain });
+		if(!checkExistingToken({ tokenHash, chain })) {
+			return Assestspool.setAsset({ tokenHash: tokenHash, fungibleToken: tokenName, tokenAbbr: tokenAbbr, amount: amount, holder: minterWallet.publicKey });
+		} else {
+			throw new Error('token already exists');
+		}
 	}
 }
 

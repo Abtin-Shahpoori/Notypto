@@ -155,9 +155,9 @@ describe('Blockchain', () => {
 	})
 
 	describe('validTransactionData', () => {
-		let transactoin, rewatdTransaction, wallet;
+		let transaction, rewardTransaction, wallet;
 		beforeEach(() => {
-			wallet = new Wallet();
+			wallet = new Wallet({ privateKey: 'e99b2615b87da28752022963f7f225f5f0114244da765b06b941ba7ba28ba121'});
 			transaction = wallet.createTransaction({ recipient: 'burn', amount: 30 });
 			rewardTransaction = Transaction.rewardTransaction({ minerWallet: wallet });
 		});

@@ -8,7 +8,7 @@ describe('TransactionPool', () => {
 
 	beforeEach(() => {
 		transactionPool = new TransactionPool();
-		senderWallet = new Wallet();
+		senderWallet = new Wallet({ privateKey: 'e99b2615b87da28752022963f7f225f5f0114244da765b06b941ba7ba28ba121' });
 		transaction = new Transaction({
 			senderWallet,
 			recipient: 'myself',
