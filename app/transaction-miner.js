@@ -9,11 +9,11 @@ class TransactionMiner {
 		this.pubNotePool = pubNotePool;
 	}
 
-	mineTransaction() {
+	mineTransaction({ wallet }) {
 		const validTransactions = this.transactionPool.validTransaction();
 
 		validTransactions.push(
-			Transaction.rewardTransaction({ minerWallet: this.wallet })	
+			Transaction.rewardTransaction({ minerWallet: wallet.publicKey })	
 		);
 		
 		this.blockchain.addBlock({ Data: { Transactions: validTransactions, Notes: this.pubNotePool.NoteMap }  });

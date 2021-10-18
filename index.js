@@ -2,7 +2,7 @@ const express = require('express')
 const Blockchain = require('./blockchain');
 const PubSub = require('./app/pubsub');
 const request = require('request');
-const { response } = require('express');
+const { response, json } = require('express');
 const path = require('path');
 const TransactionPool = require('./wallet/transaction-pool');
 const Wallet = require('./wallet');
@@ -10,7 +10,7 @@ const Note = require('./wallet/Note');
 const NotePool = require('./wallet/PubNote-pool');
 const TransactionMiner = require('./app/transaction-miner');
 const { decrypt } = require('./util/encrypt_decrypt');
-const fs = require('fs');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { ec } = require('./util');
 
 const isDevelopment = process.env.ENV === 'development';
@@ -27,16 +27,19 @@ const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
 const note = new Note();
 const notePool = new NotePool();
-var pubsub = new PubSub({ blockchain, transactionPool, wallet, notePool, redisUrl: REDIS_URL });
-const transactionMiner = new TransactionMiner({ blockchain, transactionPool, wallet, pubsub, pubNotePool: notePool });
 let pubNotes = [];
-
-
-
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'client/dist')));
+
+fetch('https://api.jsonbin.io/v3/b/616bf3f54a82881d6c615574', {
+	method: 'GET',
+	headers: {
+		'X-MASTER-KEY': '$2b$10$TiCBFGH2liKX6VWoBLbmY.krQo/5LX9juOuUUMTNiAc70RmsIbmmy',
+		'Content-Type': 'application/json'
+	}
+}).then(response => response.json()).then(json => blockchain.replaceChain(json.record.chain));
 
 app.get('/api/blocks', (req, res) => {
     res.json(blockchain.chain);
@@ -48,12 +51,14 @@ app.post('/api/create-wallet', (req, res) => {
 		wallet = new Wallet({ privateKey: keys });
 	} else {
 		const privateKey = req.body.privateKey;
-		Fwallet = wallet;
 		wallet = new Wallet({ privateKey });
 	}
 
 	res.json({ "public Key": wallet.publicKey,  "private Key": wallet.keyPair.getPrivate('hex') });
 });
+
+const pubsub = new PubSub({ blockchain, transactionPool, wallet, notePool, redisUrl: REDIS_URL });
+const transactionMiner = new TransactionMiner({ blockchain, transactionPool, wallet, pubsub, pubNotePool: notePool });
 
 app.post('/api/mine/', (req, res) => {
     const { Data } = req.body;
@@ -118,7 +123,15 @@ app.get('/api/note-pool', (req, res) => {
 });
 
 app.get('/api/mine-transactions', (req, res) => {
-	transactionMiner.mineTransaction();
+	transactionMiner.mineTransaction({ wallet });
+	fetch('https://api.jsonbin.io/v3/b/616bf3f54a82881d6c615574', {
+		method: 'PUT', 
+		headers: {
+			'X-MASTER-KEY': '$2b$10$TiCBFGH2liKX6VWoBLbmY.krQo/5LX9juOuUUMTNiAc70RmsIbmmy',
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(blockchain)
+	}).then(response => response.json()).then(json => console.log(json));
 	res.redirect('/api/blocks');
 });
 
