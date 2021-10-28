@@ -3,12 +3,11 @@ const { GENESIS_DATA, MINE_RATE } = require('../config')
 const { cryptoHash } = require('../util')
 
 class Block {
-    constructor({ hash, lasthash, Data, timestamp, nonce, difficulty, height, mining_reward, Assets }) {
+    constructor({ hash, lasthash, Data, timestamp, nonce, difficulty, height, mining_reward }) {
         this.hash = hash;
         this.lasthash = lasthash;
         this.Data = Data;
         this.height = height;
-        this.Assets = Assets;
         this.timestamp = timestamp;
         this.nonce = nonce;
         this.difficulty = difficulty;
@@ -32,7 +31,7 @@ class Block {
         return Pmining_reward;
     }
 
-    static mineblock({ lastblock, Data, Assets }) {  
+    static mineblock({ lastblock, Data }) {  
         let hash, timestamp;
         hash = "";
         const lasthash = lastblock.hash;
@@ -53,7 +52,6 @@ class Block {
             lasthash,
             Data,
             height,
-            Assets,
             difficulty,
             nonce,
             hash,

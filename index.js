@@ -12,7 +12,6 @@ const TransactionMiner = require('./app/transaction-miner');
 const { decrypt } = require('./util/encrypt_decrypt');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { ec } = require('./util');
-const Assetspool = require('./wallet/asset-pool');
 
 const isDevelopment = process.env.ENV === 'development';
 
@@ -26,7 +25,6 @@ let wallet;
 let app = express();
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
-const assetPool = new Assetspool();
 const note = new Note();
 const notePool = new NotePool();
 let pubNotes = [];
@@ -62,7 +60,7 @@ app.post('/api/create-wallet', (req, res) => {
 });
 
 const pubsub = new PubSub({ blockchain, transactionPool, wallet, notePool, redisUrl: REDIS_URL });
-const transactionMiner = new TransactionMiner({ blockchain, transactionPool, wallet, pubsub, pubNotePool: notePool, AssetsPool: assetPool });
+const transactionMiner = new TransactionMiner({ blockchain, transactionPool, wallet, pubsub, pubNotePool: notePool });
 
 app.post('/api/mine/', (req, res) => {
     const { Data } = req.body;
@@ -114,7 +112,7 @@ app.post('/api/priv-message', (req, res) => {
 		Fnote = note.createPrivateOutputMap({ message: req.body, timetamp: Date.now(), senderWallet: wallet });
 	} catch(error) {
 		return res.status(400).json({ type: 'error', messsage: error.message });
-	}
+	} 
 
 	notePool.setNote(Fnote);
 	pubsub.broadcastNote(Fnote);
@@ -213,9 +211,40 @@ app.get('/api/public-notes/:id', (req, res) => {
 }); 
 
 app.post('/api/create-token', (req, res) => {
-	const { tokenName, tokenAbbr, amount } = req.body;
-	Wallet.mintNewToken({ minterWallet: wallet, tokenname: tokenName, tokenAbbr: tokenAbbr, amount: amount, chain: blockchain.chain, Assestspool: assetPool });
-	res.json('success')
+	const { tokenAbbr, amount } = req.body;
+	transactionPool.setTransaction(wallet.mintToken({ minterWallet: wallet, tokenAbbr: tokenAbbr, amount: amount, chain: blockchain.chain }));
+	// console.log(wallet.mintToken({ minterWallet: wallet, tokenAbbr: tokenAbbr, amount: amount, chain: blockchain.chain }))
+	res.json('success');
+});
+
+app.post('/api/get-token-balance', (req, res) => {
+	const { tokenHash } = req.body;
+	res.json(wallet.calculateTokenBalance({ tokenHash: tokenHash, chain: blockchain.chain }))
+});
+
+app.post('/api/transact-token', (req, res) => {
+	const { recipient, amount, tokenHash } = req.body;
+	//TODO: fix this
+    let transaction = transactionPool.existingTransaction({ inputAddress: wallet.publicKey, tokenHash: tokenHash }); 
+    // try {
+    //     if (transaction) {
+    //         transaction.update({ senderWallet: wallet, recipient, amount });
+    //     } else {
+    //         transaction = wallet.createTokenTransaction({ recipient, amount, chain: blockchain.chain, tokenHash });
+    //     }
+    // } catch(error) {
+    //     return res.status(400).json({ type: 'error', message: error.message });
+    // }
+	if (transaction) {
+        transaction.update({ senderWallet: wallet, recipient, amount });
+    } else {
+        transaction = wallet.createTokenTransaction({ recipient, amount, chain: blockchain.chain, tokenHash });
+    }
+    
+    transactionPool.setTransaction(transaction);
+    pubsub.broadcastTransaction(transaction);
+    res.json({ type: 'success', transaction });
+	res.json();
 });
 
 app.get('*', (req, res) => {

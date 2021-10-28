@@ -3,17 +3,17 @@ const { cryptoHash }  =require("../util")
 const Wallet = require('../wallet')
 const { REWARD_INPUT, MINING_REWARD } = require('../config');
 const Transaction = require('../wallet/transaction');
+const TokenTransaction = require("../wallet/token-transaction");
 
 class Blockchain {
 	constructor() {
 		this.chain = [Block.genesis()];
 	}
 
-	addBlock({ Data, Assets }) {
+	addBlock({ Data }) {
 		const newBlock = Block.mineblock({
 			lastblock: this.chain[this.chain.length - 1],
 			Data,
-			Assets: Assets,
 		});
 		
 		this.chain.push(newBlock);
@@ -33,23 +33,23 @@ class Blockchain {
 						console.error('Miner reward exceed limit');
 						return false;
 					}
-
-					if(Object.values(transaction.outputMap)[0] !== MINING_REWARD) {
-						console.error('Miner reward amount is invalid');
-						return false;
-					}
 				} else {
-					if(!Transaction.validTransaction(transaction)) {
+					if(transaction.outputMap.type != 'token' && !Transaction.validTransaction(transaction)) {
 						console.error('Invalid Transaction');
 						return false;
-					} 
+					}
+
+					if(transaction.outputMap.type === 'token' && !TokenTransaction.validTransaction(transaction)) {
+						console.error('Invalid Transaction');
+						return false;
+					}
 
 					const trueBalance = Wallet.calculateBalance({
 						chain: this.chain,
 						address: transaction.input.address
 					});
 
-					if(transaction.input.amount !== trueBalance) {
+					if(transaction.input.amount !== trueBalance && transaction.outputMap.type != 'token') {
 						console.error('Invalid input amount');
 						return false;
 					}

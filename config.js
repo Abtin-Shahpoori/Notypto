@@ -1,4 +1,4 @@
-const INITIAL_DIFICULTY = 20;
+const INITIAL_DIFICULTY = 1;
 const MINE_RATE = 60000;
 
 const STARTING_BALANCE = 200;
@@ -9,7 +9,6 @@ const GENESIS_DATA = {
     lasthash: "ff7d5f51b1eb9b4abe78453bf6e6680121431af91e724aa3d8345308546e3e41",
     Data: {Transactions: {id: 'there are no transactions for now'}, Notes: []},
     height: 1,
-    Assets: [],
     timestamp: 1621949514244,
     nonce: 0,
     difficulty: INITIAL_DIFICULTY,
