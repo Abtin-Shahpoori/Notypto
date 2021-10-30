@@ -22,11 +22,8 @@ class Pubnotes extends Component {
     return (
       <div>
         <div className="header">
-          <a href="./Notes">
+          <a href="./">
             <button className="backButton">&#8249;</button>
-          </a>
-          <a href="./create-pub-note">
-            <button className="backButton AddButton">+</button>
           </a>
         </div>
         <div className="Notes">

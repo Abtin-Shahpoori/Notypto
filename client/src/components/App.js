@@ -10,7 +10,6 @@ class App extends Component{
                     <ul className="navBar">
                         <li><a href='./' className="active">Home</a></li>
                         <li><a href="./blockchain">Blockchain</a></li>
-                        <li><a href="./wallet">Wallet</a></li>
                         <li><a href="./notes">Notes</a></li>
                     </ul>                
                 <img src={MainImage} className="HomePage"></img>

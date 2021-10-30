@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Blocks from './Blocks';
-import NavBar from './NavigationBar';
 
 class Blockchain extends Component{
     state = { walletInfo: {} };
@@ -16,7 +15,6 @@ class Blockchain extends Component{
                 <ul className="navBar">
                     <li><a href='./'>Home</a></li>
                     <li><a href="./blockchain" className="active">Blockchain</a></li>
-                    <li><a href="./wallet">Wallet</a></li>
                     <li><a href="./notes">Notes</a></li>
                 </ul><br /><br />
                 <Blocks />

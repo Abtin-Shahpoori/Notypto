@@ -7,7 +7,6 @@ class Notes extends Component {
                     <ul className="navBar">
                         <li><a href='./'>Home</a></li>
                         <li><a href="./blockchain">Blockchain</a></li>
-                        <li><a href="./wallet">Wallet</a></li>
                         <li><a href="./notes" className="active">Notes</a></li>
                     </ul>
                     <div>
