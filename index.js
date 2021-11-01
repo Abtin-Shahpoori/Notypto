@@ -124,7 +124,8 @@ app.get('/api/note-pool', (req, res) => {
 	res.json(notePool.NoteMap);
 });
 
-app.get('/api/mine-transactions', (req, res) => {
+app.post('/api/mine-transactions', (req, res) => {
+	const wallet = req.wallet;
 	transactionMiner.mineTransaction({ wallet });
 	if(!isDevelopment) {
 		fetch('https://api.jsonbin.io/v3/b/616bf3f54a82881d6c615574', {
