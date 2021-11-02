@@ -57,5 +57,13 @@
     "sass": "^1.41.1",
     "uuid": "^3.4.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abtin-Shahpoori/Notypto.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Abtin-Shahpoori/Notypto/issues"
+  },
+  "homepage": "https://github.com/Abtin-Shahpoori/Notypto#readme",
   "description": ""
 }

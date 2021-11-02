@@ -17,7 +17,7 @@ const isDevelopment = process.env.ENV === 'development';
 
 const REDIS_URL = isDevelopment ?
 	'redis://127.0.0.1:6379' : 
-	'redis://:pcb08107675285379633dd82d3fa9aefbfdeebe7ddd16b646c8caed4d1dfd40ca@ec2-34-239-208-3.compute-1.amazonaws.com:32219'
+	'redis://:p99d252db6f9d604929e6ea0d09e3dd0cf86935ae7312f68aaa91bb95ab739fb4@ec2-34-206-57-23.compute-1.amazonaws.com:17249'
 const DEFAULT_PORT = 3000;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 let wallet;
